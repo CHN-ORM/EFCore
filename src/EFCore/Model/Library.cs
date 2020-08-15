@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace myApp.Model
+namespace EFCore.Model
 {
     public class Library
     {

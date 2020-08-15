@@ -1,4 +1,4 @@
-namespace myApp.Model
+namespace EFCore.Model
 {
     public class Book
     {
