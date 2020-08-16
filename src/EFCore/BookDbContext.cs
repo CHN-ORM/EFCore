@@ -9,8 +9,14 @@ namespace EFCore
         public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-            => builder.UseSqlite("Data Source=books.db");
+        public BookDbContext(DbContextOptions<BookDbContext> options)
+            : base(options)
+        {
+
+        }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        //    => builder.UseSqlite("Data Source=books.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EFCore.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EFCore
 {
@@ -11,7 +12,16 @@ namespace EFCore
     {
         static void Main(string[] args)
         {
-            Relational();
+            // 初始化服务
+            IServiceCollection services = new ServiceCollection();
+            new Startup().ConfiguraServices(services);
+            var sp = services.BuildServiceProvider();
+
+            // 初始化数据库
+            Init(sp);
+
+            // 获取关系数据
+            RetriveRelational(sp);
         }
 
         #region 关系映射
@@ -19,42 +29,59 @@ namespace EFCore
         /// <summary>
         /// 加载关联数据
         /// </summary>
-        static void Relational()
+        static void RetriveRelational(IServiceProvider sp)
         {
-            Init();
-            using (var db = new BookDbContext())
+            using (var scope = sp.CreateScope())
+            using (var db = scope.ServiceProvider.GetService<BookDbContext>())
             {
-                //var libQuery = db.Libraries
-                //    .Include(lib => lib.Books);
-                //foreach (var library in libQuery)
-                //{
-                //    System.Console.WriteLine($"LibraryId: {library.LibraryId}, BookCount: {library.Books.Count}, Name: {library.Name}");
+                LoadLibraries(db);
 
-                //    foreach (var book in library.Books)
-                //    {
-                //        System.Console.WriteLine($" LibraryId: {book.LibraryId}, Book.Library: {book.Library.LibraryId}, BookId: {book.BookId}, Name: {book.Name}");
-                //    }
-                //}
+                LoadBooks(db);
+            }
+        }
 
-                //Console.WriteLine();
+        /// <summary>
+        /// 加载图书馆，及关联的数据
+        /// </summary>
+        private static void LoadLibraries(BookDbContext db)
+        {
+            var libQuery = db.Libraries
+                .Include(lib => lib.Books);
+            foreach (var library in libQuery)
+            {
+                System.Console.WriteLine($"LibraryId: {library.LibraryId}, BookCount: {library.Books.Count}, Name: {library.Name}");
 
-                var bookQuery = db.Books
-                    .Include(b => b.Library)
-                    .ToList();
-
-                foreach (var book in db.Books)
+                foreach (var book in library.Books)
                 {
-                    Console.WriteLine($"BookId: {book.BookId}, LibraryName: {book.Library?.Name}, Name: {book.Name}");
+                    System.Console.WriteLine($" LibraryId: {book.LibraryId}, Book.Library: {book.Library.LibraryId}, BookId: {book.BookId}, Name: {book.Name}");
                 }
+            }
+
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// 加载书本
+        /// </summary>
+        private static void LoadBooks(BookDbContext db)
+        {
+            var bookQuery = db.Books
+                .Include(b => b.Library)
+                .ToList();
+
+            foreach (var book in db.Books)
+            {
+                Console.WriteLine($"BookId: {book.BookId}, LibraryName: {book.Library?.Name}, Name: {book.Name}");
             }
         }
 
         /// <summary>
         /// 初始化数据库，创建数据
         /// </summary>
-        static void Init()
+        static void Init(IServiceProvider sp)
         {
-            using (var db = new BookDbContext())
+            using (var scope = sp.CreateScope())
+            using (var db = scope.ServiceProvider.GetService<BookDbContext>())
             {
                 if (!db.Database.EnsureCreated())
                     return;
