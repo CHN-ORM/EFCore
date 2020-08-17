@@ -5,12 +5,66 @@ using EFCore.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
+using EFCore.Entity;
+using System.Threading.Tasks;
 
 namespace EFCore
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
+        {
+            await OutterRelation();
+        }
+
+        #region 外关联
+
+        /// <summary>
+        /// 外关联
+        /// </summary>
+        static async Task OutterRelation()
+        {
+            // 创建服务集合
+            IServiceCollection services = new ServiceCollection();
+            services.AddDbContextPool<IoTDbContext>(options =>
+                options.UseSqlite("Data Source=IoTDb.db"));
+
+            // 创建服务提供程序
+            var serviceProvider = services.BuildServiceProvider();
+
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetService<IoTDbContext>();
+                await db.Database.EnsureDeletedAsync();
+                await db.Database.EnsureCreatedAsync();
+
+                // 初始化数据库
+                await db.Gateways.AddRangeAsync(new List<OPPO_Gateway>
+                {
+                    new OPPO_Gateway { vid = "v58x" },
+                    new OPPO_Gateway { vid = "v53x" },
+                    new OPPO_Gateway { vid = "v52x" },
+                });
+
+                await db.SaveChangesAsync();
+
+                foreach (var item in db.Gateways)
+                {
+                    Console.WriteLine(item.vid);
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region 图书馆
+
+        /// <summary>
+        /// 图书馆
+        /// </summary>
+        static void Library()
         {
             // 初始化服务
             IServiceCollection services = new ServiceCollection();
@@ -23,8 +77,6 @@ namespace EFCore
             // 获取关系数据
             RetriveRelational(sp);
         }
-
-        #region 关系映射
 
         /// <summary>
         /// 加载关联数据
