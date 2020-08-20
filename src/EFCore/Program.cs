@@ -35,10 +35,14 @@ namespace EFCore
             using (var scope = serviceProvider.CreateScope())
             {
                 var db = scope.ServiceProvider.GetService<IoTDbContext>();
+                
+                // 重新生成数据库
                 await db.Database.EnsureDeletedAsync();
                 await db.Database.EnsureCreatedAsync();
 
                 // 初始化数据库
+
+                // 添加网关信息
                 await db.Gateways.AddRangeAsync(new List<OPPO_Gateway>
                 {
                     new OPPO_Gateway { vid = "v58x" },
@@ -46,11 +50,49 @@ namespace EFCore
                     new OPPO_Gateway { vid = "v52x" },
                 });
 
+                // 添加子设备
+                await db.SubDevices.AddRangeAsync(
+                    new OPPO_SubDevice
+                    {
+                        equip_no = 1,
+                        did = "rtk3bjzm",
+                        pid = "rtaK",
+                        vid = "c0a80002",
+                        dev_name = "路由器",
+                        dev_pub_key = "04D4B6B498323E078B5BBA19ADC2D290622E00C57C61F895C867E06C34DEF399CECC4580B58054CDE892201B2B6A36B414C535EEE127C0CEAEF51375707AB1B872",
+                    });
+
+                // 添加属性对应关系
+                await db.PointProperties.AddRangeAsync(
+                    new OPPO_ServiceProperty { siid = 19456, iid = 1, point_no = 1, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 2, point_no = 2, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 3, point_no = 3, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 4, point_no = 4, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 5, point_no = 5, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 6, point_no = 6, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 7, point_no = 7, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 8, point_no = 8, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 9, point_no = 9, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 10, point_no = 10, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 11, point_no = 11, point_type = "C" },
+                    new OPPO_ServiceProperty { siid = 19456, iid = 12, point_no = 12, point_type = "C" }
+                    );
+
                 await db.SaveChangesAsync();
 
                 foreach (var item in db.Gateways)
                 {
                     Console.WriteLine(item.vid);
+                }
+
+                foreach (var item in db.SubDevices)
+                {
+                    Console.WriteLine(item.vid);
+                }
+
+                foreach (var item in db.PointProperties)
+                {
+                    Console.WriteLine(item);
                 }
 
             }
