@@ -22,10 +22,7 @@ namespace EFCore
                     }
                 );
                 options
-                    .UseSqlite("Data Source=books.db", options =>
-                    {
-                        //options.ExecutionStrategy();
-                    })
+                    .UseSqlite("Data Source=books.db")
                     //.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=books;Integrated Security=True")
                     //.UseInMemoryDatabase("books")
                     .UseLoggerFactory(loggerFactory);

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace EFCore.Entity
+namespace EFCore.IoTDB
 {
     /// <summary>
     /// 子设备信息
     /// </summary>
-    public class OPPO_SubDevice
+    public class OPPO_Device
     {
         public int equip_no { get; set; }
+        public int typeid { get; set; }
         public string vid { get; set; }
         public string did { get; set; }
         public string pid { get; set; }
@@ -32,8 +33,8 @@ namespace EFCore.Entity
         public bool online { get; set; }
 
         /// <summary>
-        /// 服务列表
+        /// 设备类型
         /// </summary>
-        public List<OPPO_SubDeviceService> SubDeviceServices { get; set; }
+        public OPPO_DeviceType Type { get; set; }
     }
 }

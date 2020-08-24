@@ -1,4 +1,4 @@
-﻿namespace EFCore.Entity
+﻿namespace EFCore.IoTDB
 {
     /// <summary>
     /// 网关信息
