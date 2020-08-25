@@ -23,9 +23,5 @@ namespace EFCore.IoTDB
         /// 服务描述
         /// </summary>
         public string description { get; set; }
-
-        public List<OPPO_DeviceService> DeviceServices { get; set; }
-
-        public List<OPPO_ServiceProperty> ServiceProperties { get; set; }
     }
 }

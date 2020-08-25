@@ -4,8 +4,13 @@ using System.Text;
 
 namespace EFCore.IoTDB
 {
-    public class OPPO_ServiceProperty
+    public class OPPO_DeviceProperty
     {
+        /// <summary>
+        /// 设备类型id（复合主键）
+        /// </summary>
+        public int typeid { get; set; }
+
         /// <summary>
         /// 服务id（复合主键）
         /// </summary>
@@ -32,6 +37,11 @@ namespace EFCore.IoTDB
         public string point_type { get; set; }
 
         /// <summary>
+        /// 设备类型导航属性
+        /// </summary>
+        public OPPO_DeviceType Type { get; set; }
+
+        /// <summary>
         /// 服务导航属性
         /// </summary>
         public OPPO_Service Service { get; set; }
@@ -40,5 +50,6 @@ namespace EFCore.IoTDB
         /// 属性导航属性
         /// </summary>
         public OPPO_Property Property { get; set; }
+
     }
 }

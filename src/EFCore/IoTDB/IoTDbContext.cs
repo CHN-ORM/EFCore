@@ -36,14 +36,9 @@ namespace EFCore.IoTDB
         public DbSet<OPPO_Property> OPPO_Property { get; set; }
 
         /// <summary>
-        /// 设备服务关系（多对多）
+        /// /设备属性关系（多对多）
         /// </summary>
-        public DbSet<OPPO_DeviceService> OPPO_DeviceService { get; set; }
-
-        /// <summary>
-        /// /服务属性关系（多对多）
-        /// </summary>
-        public DbSet<OPPO_ServiceProperty> OPPO_ServiceProperty { get; set; }
+        public DbSet<OPPO_DeviceProperty> OPPO_DeviceProperty { get; set; }
 
         #endregion
 
@@ -78,12 +73,14 @@ namespace EFCore.IoTDB
             var deviceBuilder = modelBuilder.Entity<OPPO_Device>();
             deviceBuilder.HasKey(d => d.vid);
             deviceBuilder
-                .HasOne(d => d.Type)
-                .WithMany(t => t.Devices);
+                .HasOne(d => d.Type);
 
             // 设备类型
-            modelBuilder.Entity<OPPO_DeviceType>()
-                .HasKey(t => t.typeid);
+            var typeBuilder = modelBuilder.Entity<OPPO_DeviceType>();
+            typeBuilder.HasKey(t => t.typeid);
+            typeBuilder
+                .HasMany(t => t.DevicePropertis)
+                .WithOne(dp => dp.Type);
 
             // 设备服务
             modelBuilder.Entity<OPPO_Service>()
@@ -93,33 +90,12 @@ namespace EFCore.IoTDB
             modelBuilder.Entity<OPPO_Property>()
                 .HasKey(s =>  s.pid);
 
-            // 子设备服务关系配置
-            var subDeviceServiceBuilder = modelBuilder.Entity<OPPO_DeviceService>();
-            subDeviceServiceBuilder.HasKey(s => new
-                {
-                    s.typeid,
-                    s.siid,
-                });
-            subDeviceServiceBuilder
-                .HasOne(m => m.Service)
-                .WithMany(s => s.DeviceServices);
-            subDeviceServiceBuilder
-                .HasOne(s => s.DeviceType)
-                .WithMany(s => s.DeviceServices);
-
-            // 服务属性关系配置
-            var servicePropertyBuilder = modelBuilder.Entity<OPPO_ServiceProperty>();
-            servicePropertyBuilder.HasKey(sp => new
-            {
-                sp.siid,
-                sp.pid,
-            });
-            servicePropertyBuilder
-                .HasOne(sp => sp.Service)
-                .WithMany(s => s.ServiceProperties);
-            servicePropertyBuilder
-                .HasOne(sp => sp.Property)
-                .WithMany(p => p.ServiceProperties);
+            var dpBuilder = modelBuilder.Entity<OPPO_DeviceProperty>();
+            dpBuilder.HasKey(dp => new { dp.typeid, dp.siid, dp.pid });
+            dpBuilder
+                .HasOne(dp => dp.Property)
+                .WithMany(p => p.DeviceProperties);
+            dpBuilder.HasOne(dp => dp.Service);
         }
 
         #endregion

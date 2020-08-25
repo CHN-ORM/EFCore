@@ -37,7 +37,7 @@ namespace EFCore
             {
                 var db = scope.ServiceProvider.GetService<IoTDbContext>();
 
-                await InitDbAsync(db);
+                //await InitDbAsync(db);
 
                 Console.WriteLine($"Gateway count: {db.OPPO_Gateway.Count()}");
                 //foreach (var item in db.Gateways)
@@ -57,52 +57,45 @@ namespace EFCore
                 //    Console.WriteLine(item);
                 //}
 
-                Console.WriteLine($"ServiceProperty count: {db.OPPO_ServiceProperty.Count()}");
-                //foreach (var item in db.ServiceProperties)
-                //{
-                //    Console.WriteLine(item);
-                //}
-                Console.WriteLine($"DeviceService count: {db.OPPO_DeviceService.Count()}");
                 Console.WriteLine();
 
                 Console.WriteLine($"设备表");
                 var queryDev = db.OPPO_Device
                     .Include(d => d.Type);
+
                 foreach (var item in queryDev)
                 {
                     Console.WriteLine($"Name: {item.dev_name}, Type: {item.Type.name}");
                 }
 
-                Console.WriteLine($"服务属性表");
-                var querySP = db.OPPO_ServiceProperty
-                    .Include(sp => sp.Property)
-                    .Include(sp => sp.Service)
-                    .OrderBy(s => s.siid);
-                foreach (var item in querySP)
-                {
-                    Console.WriteLine($"siid: {item.siid}, pid: {item.iid}, Service: {item.Service.name}, Property: {item.Property.name}");
-                }
-                Console.WriteLine();
-
-                Console.WriteLine($"设备服务表");
-                var queryDS = db.OPPO_DeviceService
-                    .Include(ds => ds.Service)
-                    .Include(ds => ds.DeviceType)
-                    .OrderBy(ds => ds.typeid)
-                    .ThenBy(ds => ds.siid);
-                foreach (var item in queryDS)
-                {
-                    Console.WriteLine($"typeid: {item.typeid}, siid: {item.siid}, Name: {item.Service.name}, Type: {item.DeviceType.name}");
-                }
-                Console.WriteLine();
-
                 // 获取设备的属性列表
-                var props = db.OPPO_Device.Join<OPPO_Device, OPPO_DeviceType, int, Prop>(db.OPPO_DeviceType, d => d.typeid, d => d.typeid, (d, t) =>
-                new Prop { Device = d, Type = t });
+                //var props = db.OPPO_Device.Join<OPPO_Device, OPPO_DeviceType, int, Prop>(db.OPPO_DeviceType, d => d.typeid, d => d.typeid, (d, t) =>
+                //new Prop { Device = d, Type = t });
 
-                foreach (var prop in props)
+                //foreach (var prop in props)
+                //{
+                //    Console.WriteLine($"设备名称: {prop.Device.dev_name}, 类型: {prop.Type.name}");
+                //}
+
+                // 持久化Property-DeviceProperty关系
+                //db.OPPO_DeviceProperty
+                //    .Include(dp => dp.Property)
+                //    .ThenInclude(p => p.DeviceProperties).ToList();
+
+                Console.WriteLine($"设备列表");
+                var devs = db.OPPO_Device
+                    .Include(d => d.Type)
+                    .ThenInclude(t => t.DevicePropertis)
+                    .ThenInclude(dp => dp.Property)
+                    .ToList();
+
+                foreach (var dev in devs)
                 {
-                    Console.WriteLine($"设备名称: {prop.Device.dev_name}, 类型: {prop.Type.name}");
+                    Console.WriteLine($"设备名：{dev.dev_name}，typeid: {dev.typeid}, props: {dev.Type.DevicePropertis.Count()}");
+                    foreach (var prop in dev.Type.DevicePropertis)
+                    {
+                        Console.WriteLine($"    属性：{prop.Property.name}, siid: {prop.siid}, iid: {prop.iid}, type: {prop.Property.type}, point_no: {prop.point_no}, point_type: {prop.point_type}");
+                    }
                 }
             }
 
@@ -128,8 +121,6 @@ namespace EFCore
             await db.OPPO_Gateway.AddRangeAsync(new List<OPPO_Gateway>
                 {
                     new OPPO_Gateway { pid = "1", vid = "v58x" },
-                    new OPPO_Gateway { pid = "2", vid = "v53x" },
-                    new OPPO_Gateway { pid = "3", vid = "v52x" },
                 });
 
             // 添加子设备
@@ -197,29 +188,24 @@ namespace EFCore
                 );
 
             // 添加服务属性
-            await db.OPPO_ServiceProperty.AddRangeAsync(
+            await db.OPPO_DeviceProperty.AddRangeAsync(
                 // 排风机
-                new OPPO_ServiceProperty { siid = 101000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201002, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101000, pid = 201007, iid = 9, point_no = 9, point_type = "C" }
-                // 风机盘管
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
-                //, new OPPO_ServiceProperty { siid = 101001, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
-                , new OPPO_ServiceProperty { siid = 101001, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
-                );
-
-            // 添加设备服务
-            await db.OPPO_DeviceService.AddRangeAsync(
-                new OPPO_DeviceService { typeid = 1000, siid = 101000 }
+                  new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201002, iid = 4, point_no = 4, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201007, iid = 9, point_no = 9, point_type = "C" }
+                // 风机盘管                          
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
+                //, new OPPO_ServiceProperty  { siid = 101001, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
                 );
 
             await db.SaveChangesAsync();
