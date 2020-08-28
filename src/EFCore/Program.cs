@@ -27,8 +27,8 @@ namespace EFCore
             // 创建服务集合
             IServiceCollection services = new ServiceCollection();
             services.AddDbContextPool<IoTDbContext>(options =>
-                  //options.UseSqlite("Data Source=IoTDb.db"));
-                  options.UseMySql("Server=localhost;port=3307;Database=IotDb;User=root;Password=357592895;"));
+                  options.UseSqlite("Data Source=IoTDb.db"));
+            //options.UseMySql("Server=localhost;port=3307;Database=IotDb;User=root;Password=357592895;"));
 
             // 创建服务提供程序
             var serviceProvider = services.BuildServiceProvider();
@@ -37,7 +37,7 @@ namespace EFCore
             {
                 var db = scope.ServiceProvider.GetService<IoTDbContext>();
 
-                //await InitDbAsync(db);
+                await InitDbAsync(db);
 
                 Console.WriteLine($"Gateway count: {db.OPPO_Gateway.Count()}");
                 //foreach (var item in db.Gateways)
@@ -120,13 +120,17 @@ namespace EFCore
             // 添加网关信息
             await db.OPPO_Gateway.AddRangeAsync(new List<OPPO_Gateway>
                 {
-                    new OPPO_Gateway { pid = "1", vid = "v58x" },
+                    new OPPO_Gateway 
+                    {
+                        pid = "1", 
+                        vid = "v58x" 
+                    },
                 });
 
             // 添加子设备
             await db.OPPO_Device.AddRangeAsync(new OPPO_Device
             {
-                equip_no = 1,
+                equip_no = 3,
                 did = "rtk3bjzm",
                 pid = "rtaK",
                 vid = "c0a80002",
@@ -144,36 +148,35 @@ namespace EFCore
 
             // 添加服务
             await db.OPPO_Service.AddRangeAsync(
-                new OPPO_Service { siid = 101000, name1 = "eaf", name = "排风机" }
-                , new OPPO_Service { siid = 101001, name1 = "fcu", name = "风机盘管" }
-                , new OPPO_Service { siid = 100102, name1 = "saf", name = "送风机" }
-                , new OPPO_Service { siid = 101003, name1 = "ahu", name = "空气处理单元" }
-                , new OPPO_Service { siid = 101004, name1 = "vav", name = "vav空调末端" }
-                , new OPPO_Service { siid = 101005, name1 = "chiller", name = "冷却塔" }
-                , new OPPO_Service { siid = 101006, name1 = "cwPump", name = "冷却泵", description = "Condenser Water Pump" }
-                , new OPPO_Service { siid = 101007, name1 = "chwPump", name = "冷冻泵", description = "Chilled Water Pump" }
-                , new OPPO_Service { siid = 101008, name1 = "valve", name = "阀门", description = "valve" }
-                , new OPPO_Service { siid = 101009, name1 = "iceStorageTank", name = "蓄冰槽" }
-                , new OPPO_Service { siid = 101010, name1 = "cwPipe", name = "冷却水管", description = "condenser water pipe" }
-                , new OPPO_Service { siid = 101011, name1 = "chwPipe", name = "冷冻水管", description = "Chilled Water Pipe" }
-                , new OPPO_Service { siid = 101012, name1 = "baseLoadChiller", name = "机载主机", description = "chiller" }
-                , new OPPO_Service { siid = 100036, name1 = "tempHumSensor", name = "温湿度" }
-                , new OPPO_Service { siid = 101013, name1 = "doubleModeChiller", name = "双工况主机" }
-                , new OPPO_Service { siid = 101014, name1 = "glycolPump", name = "乙二醇泵" }
-                , new OPPO_Service { siid = 101015, name1 = "coldHeatSourceSystem", name = "冷热源系统" }
-                , new OPPO_Service { siid = 101016, name1 = "plateExchanger", name = "板换" }
-                , new OPPO_Service { siid = 101017, name1 = "faf", name = "新风机" }
-                , new OPPO_Service { siid = 101018, name1 = "raf", name = "回风机" }
-                , new OPPO_Service { siid = 101019, name1 = "mfa", name = "手报", description = "manualFireAlarm" }
-                , new OPPO_Service { siid = 101020, name1 = "ava", name = "声光报警", description = "audiableAndVisualAlarm" }
-                , new OPPO_Service { siid = 101021, name1 = "fireHydrant", name = "消防栓", description = "Fire Hydrant" }
-                , new OPPO_Service { siid = 101022, name1 = "broadcastingSys", name = "广播模块" }
+                  new OPPO_Service { /*siid = 101000,*/ siid = 256000, name1 = "eaf", name = "排风机" }
+                , new OPPO_Service { /*siid = 101001,*/ siid = 256256, name1 = "fcu", name = "风机盘管" }
+                , new OPPO_Service { /*siid = 100102,*/ siid = 256512, name1 = "saf", name = "送风机" }
+                , new OPPO_Service { /*siid = 101003,*/ siid = 256768, name1 = "ahu", name = "空气处理单元" }
+                , new OPPO_Service { /*siid = 101004,*/ siid = 257024, name1 = "vav", name = "vav空调末端" }
+                , new OPPO_Service { /*siid = 101005,*/ siid = 257280, name1 = "chiller", name = "冷却塔" }
+                , new OPPO_Service { /*siid = 101006,*/ siid = 257536, name1 = "cwPump", name = "冷却泵", description = "Condenser Water Pump" }
+                , new OPPO_Service { /*siid = 101007,*/ siid = 257792, name1 = "chwPump", name = "冷冻泵", description = "Chilled Water Pump" }
+                , new OPPO_Service { /*siid = 101008,*/ siid = 258048, name1 = "valve", name = "阀门", description = "valve" }
+                , new OPPO_Service { /*siid = 101009,*/ siid = 258304, name1 = "iceStorageTank", name = "蓄冰槽" }
+                , new OPPO_Service { /*siid = 101010,*/ siid = 258560, name1 = "cwPipe", name = "冷却水管", description = "condenser water pipe" }
+                , new OPPO_Service { /*siid = 101011,*/ siid = 258816, name1 = "chwPipe", name = "冷冻水管", description = "Chilled Water Pipe" }
+                , new OPPO_Service { /*siid = 101012,*/ siid = 259072, name1 = "baseLoadChiller", name = "机载主机", description = "chiller" }
+                , new OPPO_Service { /*siid = 100036,*/ siid = 9216, name1 = "tempHumSensor", name = "温湿度" }
+                , new OPPO_Service { /*siid = 101013,*/ siid = 259328, name1 = "doubleModeChiller", name = "双工况主机" }
+                , new OPPO_Service { /*siid = 101014,*/ siid = 259584, name1 = "glycolPump", name = "乙二醇泵" }
+                , new OPPO_Service { /*siid = 101015,*/ siid = 259840, name1 = "coldHeatSourceSystem", name = "冷热源系统" }
+                , new OPPO_Service { /*siid = 101016,*/ siid = 260096, name1 = "plateExchanger", name = "板换" }
+                , new OPPO_Service { /*siid = 101017,*/ siid = 260352, name1 = "faf", name = "新风机" }
+                , new OPPO_Service { /*siid = 101018,*/ siid = 260608, name1 = "raf", name = "回风机" }
+                , new OPPO_Service { /*siid = 101019,*/ siid = 260864, name1 = "mfa", name = "手报", description = "manualFireAlarm" }
+                , new OPPO_Service { /*siid = 101020,*/ siid = 261120, name1 = "ava", name = "声光报警", description = "audiableAndVisualAlarm" }
+                , new OPPO_Service { /*siid = 101021,*/ siid = 261376, name1 = "fireHydrant", name = "消防栓", description = "Fire Hydrant" }
+                , new OPPO_Service { /*siid = 101022,*/ siid = 261632, name1 = "broadcastingSys", name = "广播模块" }
                 );
 
             // 添加属性
             await db.OPPO_Property.AddRangeAsync(
                 // 排风机
-                //new OPPO_Property { pid = , propid = "power", type = "int", point_no = 1, point_type = "C" }
                 new OPPO_Property { pid = 201000, type = "bool", name1 = "mannulAutoSta", name = "故障状态", description = "Fault Status" }
                 , new OPPO_Property { pid = 201001, type = "bool", name1 = "faultSta", name = "手自动状态", description = "Mannul&auto status" }
                 , new OPPO_Property { pid = 201002, type = "bool", name1 = "pressureDiffSta", name = "压差状态", description = "Pressure differential Status" }
@@ -190,22 +193,22 @@ namespace EFCore
             // 添加服务属性
             await db.OPPO_DeviceProperty.AddRangeAsync(
                 // 排风机
-                  new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201002, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101000, pid = 201007, iid = 9, point_no = 9, point_type = "C" }
+                  new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201002, iid = 4, point_no = 4, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201007, iid = 9, point_no = 9, point_type = "C" }
                 // 风机盘管                          
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
                 //, new OPPO_ServiceProperty  { siid = 101001, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 101001, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201004, iid = 6, point_no = 6, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201005, iid = 7, point_no = 7, point_type = "C" }
+                , new OPPO_DeviceProperty { typeid = 1000, siid = 256256, pid = 201006, iid = 8, point_no = 8, point_type = "C" }
                 );
 
             await db.SaveChangesAsync();
