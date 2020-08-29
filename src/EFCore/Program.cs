@@ -120,10 +120,18 @@ namespace EFCore
             // 添加网关信息
             await db.OPPO_Gateway.AddRangeAsync(new List<OPPO_Gateway>
                 {
-                    new OPPO_Gateway 
+                    new OPPO_Gateway
                     {
-                        pid = "1", 
-                        vid = "v58x" 
+                        did = "1ETDhi3a",
+                        pid = "15Lm",
+                        vid = "3" ,
+                        mac = "123456789012345678",
+                        pin = "123",
+
+                        root_cert = Consts.ServerRootCert,
+                        product_cert = Consts.ProductCert,
+                        dev_cert = Consts.DeviceCert,
+                        dev_pri_key = Consts.DevicePrivateKey,
                     },
                 });
 
@@ -193,24 +201,24 @@ namespace EFCore
             // 添加服务属性
             await db.OPPO_DeviceProperty.AddRangeAsync(
                 // AHU
-                  new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 1, point_no = 1, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 3, point_no = 3, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 5, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 6, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 7, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 8, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 9, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 10, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 11, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
-                , new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                //  new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 1, point_no = 1, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 3, point_no = 3, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 5, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 6, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 7, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 8, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 9, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 10, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 11, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
+                //, new OPPO_DeviceProperty { typeid = 1005, siid = 256768, pid = 201000, iid = 4, point_no = 4, point_type = "C" }
 
                 // 排风机
-                , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
+                  new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201000, iid = 2, point_no = 2, point_type = "C" }
                 , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201001, iid = 3, point_no = 3, point_type = "C" }
                 , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201002, iid = 4, point_no = 4, point_type = "C" }
                 , new OPPO_DeviceProperty { typeid = 1000, siid = 256000, pid = 201003, iid = 5, point_no = 5, point_type = "C" }
