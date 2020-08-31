@@ -33,8 +33,8 @@ namespace EFCore.IoTDB
         public bool online { get; set; }
 
         /// <summary>
-        /// 设备类型
+        /// 服务列表
         /// </summary>
-        public OPPO_DeviceType Type { get; set; }
+        public IEnumerable<OPPO_DeviceProperty> DevicePropertis { get; set; }
     }
 }

@@ -7,6 +7,11 @@ namespace EFCore.IoTDB
     public class OPPO_DeviceProperty
     {
         /// <summary>
+        /// 设备号（复合主键）
+        /// </summary>
+        public int equip_no { get; set; }
+
+        /// <summary>
         /// 设备类型id（复合主键）
         /// </summary>
         public int typeid { get; set; }
@@ -50,6 +55,11 @@ namespace EFCore.IoTDB
         /// 属性导航属性
         /// </summary>
         public OPPO_Property Property { get; set; }
+
+        /// <summary>
+        /// 设备导航属性
+        /// </summary>
+        public OPPO_Device Device { get; set; }
 
     }
 }

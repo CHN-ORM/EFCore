@@ -71,16 +71,16 @@ namespace EFCore.IoTDB
 
             // 子设备
             var deviceBuilder = modelBuilder.Entity<OPPO_Device>();
-            deviceBuilder.HasKey(d => d.vid);
+            deviceBuilder.HasKey(d => new { d.equip_no, d.typeid });
             deviceBuilder
-                .HasOne(d => d.Type);
+                .HasMany(p => p.DevicePropertis)
+                .WithOne(dp => dp.Device)
+                .HasForeignKey(dp => new { dp.equip_no, dp.typeid })
+                .OnDelete(DeleteBehavior.Cascade);
 
             // 设备类型
-            var typeBuilder = modelBuilder.Entity<OPPO_DeviceType>();
-            typeBuilder.HasKey(t => t.typeid);
-            typeBuilder
-                .HasMany(t => t.DevicePropertis)
-                .WithOne(dp => dp.Type);
+            var typeBuilder = modelBuilder.Entity<OPPO_DeviceType>()
+                .HasKey(t => t.typeid);
 
             // 设备服务
             modelBuilder.Entity<OPPO_Service>()
@@ -90,8 +90,9 @@ namespace EFCore.IoTDB
             modelBuilder.Entity<OPPO_Property>()
                 .HasKey(s =>  s.pid);
 
+            // 属性关系配置
             var dpBuilder = modelBuilder.Entity<OPPO_DeviceProperty>();
-            dpBuilder.HasKey(dp => new { dp.typeid, dp.siid, dp.pid });
+            dpBuilder.HasKey(dp => new { dp.equip_no, dp.typeid, dp.siid, dp.pid });
             dpBuilder
                 .HasOne(dp => dp.Property)
                 .WithMany(p => p.DeviceProperties);

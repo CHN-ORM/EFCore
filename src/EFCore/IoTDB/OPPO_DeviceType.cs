@@ -23,10 +23,5 @@ namespace EFCore.IoTDB
         /// 类型名称（中文）
         /// </summary>
         public string name { get; set; }
-
-        /// <summary>
-        /// 服务列表
-        /// </summary>
-        public IEnumerable<OPPO_DeviceProperty> DevicePropertis { get; set; }
     }
 }
