@@ -28,6 +28,11 @@ namespace EFCore.IoTDB
         public string description { get; set; }
 
         /// <summary>
+        /// 精度
+        /// </summary>
+        public int precision { get; set; }
+
+        /// <summary>
         /// 数据类型
         /// </summary>
         public string type { get; set; }
